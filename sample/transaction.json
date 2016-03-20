@@ -1,0 +1,23 @@
+{
+  "method" : "addTransaction"
+  ,"param" :
+  {
+    "customer_id" : "1"
+    ,"transaction_type" : "1"
+    ,"transaction_items" :
+    [
+      {
+    	"wood_id" : "1"
+    	,"wood_qty" : "50"
+      },
+      {
+      "wood_id" : "2"
+      ,"wood_qty" : "50"
+      }
+    ]
+  }
+}
+
+{
+  "method" : "addTransaction"
+}
