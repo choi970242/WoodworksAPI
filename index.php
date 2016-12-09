@@ -35,7 +35,8 @@ $params = $_GET['params'];
 $library = new Actions();
 // OBVIOUSLY you would filter input at this point
 $action = $request -> method;
-$data = $library->$action($params,$user_key);
+//$data = $library->$action($params,$user_key);
+$data = $action($params, $user_key);
 // output appropriately
 $view->render($data);
 }

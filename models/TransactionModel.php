@@ -10,25 +10,25 @@ class TransactionModel{
 
 	public function getTransactions($params){
 		if(empty($params)){
-			$sqlstmt = "SELECT * FROM V_TRANSACTION WHERE TRANSACTION_STATUS <> 'DELETED';";
+			$sqlstmt = "SELECT * FROM V_TRANSACTION;";
 			$stmt = $this->db -> prepare($sqlstmt);
 		}
 		else{
-			$sqlstmt = "SELECT * FROM V_TRANSACTION WHERE TRANSACTION_ID = ? AND TRANSACTION_STATUS <> 'DELETED';";
+			$sqlstmt = "SELECT * FROM V_TRANSACTION WHERE CUSTOMER_ID = ?;";
 			$stmt = $this->db -> prepare($sqlstmt);
-			$stmt -> bindParam(1,$params->transaction_id,PDO::PARAM_INT);
+			$stmt -> bindParam(1,$params->customer_id,PDO::PARAM_INT);
 		}
 
 		$stmt -> execute();
 		$transactions = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 		foreach ($transactions as &$transaction) {
-			$transaction['TRANSACTION_ITEMS'] = $this->getTransactionDetails($transaction['TRANSACTION_ID']);
+			$transaction['ORDERS'] = $this->getTransactionDetails($transaction['TRANSACTION_ID']);
 		}
 		return $transactions;
 	}
 
 	public function getTransactionDetails($transaction_id){
-		$sqlstmt = "SELECT WOOD_TYPE, WOOD_LENGTH, WOOD_WIDTH, WOOD_HEIGHT, WOOD_QTY, TOTAL_PRICE FROM V_TRANSACTION_DETAIL WHERE TRANSACTION_ID = ?";
+		$sqlstmt = "SELECT WOOD_TYPE, WOOD_THICKNESS, WOOD_WIDTH, WOOD_LENGTH, WOOD_QTY, TOTAL_PRICE FROM V_TRANSACTION_DETAIL WHERE TRANSACTION_ID = ?";
 		$stmt = $this->db->prepare($sqlstmt);
 		$stmt -> bindParam(1,$transaction_id,PDO::PARAM_INT);
 		$stmt -> execute();
@@ -37,8 +37,8 @@ class TransactionModel{
 	}
 
 	public function addTransactions($params){
-		$stmt = $this->db -> prepare("INSERT INTO TRANSACTION (CUSTOMER_ID, TRANSACTION_TYPE) VALUES (?,?);");
-		if(!array_key_exists('transaction_items',$params)){
+		$stmt = $this->db -> prepare("INSERT INTO TRANSACTION (CUSTOMER_ID,TRANSACTION_TOTAL) VALUES (?,?);");
+		if(!array_key_exists('orders',$params)){
 			return array("error" => "1", "message" => "No items received");
 		}
 		try{
@@ -48,10 +48,10 @@ class TransactionModel{
 		}
 		else{
 			$stmt -> bindParam(1,$params->customer_id,PDO::PARAM_INT,100);
-			$stmt -> bindParam(2,$params->transaction_type,PDO::PARAM_INT,100);
+			$stmt -> bindParam(2,$params->transaction_total);
 			$stmt -> execute();
 		}
-		$details = $this->addTransactionDetails($this-> db -> lastInsertId(),$params->transaction_items);
+		$details = $this->addTransactionDetails($this-> db -> lastInsertId(),$params->orders);
 		if(empty($details['error'])){
 			$this->db->commit();
 			$result = array("error" => null, "message" => "Transaction Added Successfully!");
@@ -154,6 +154,9 @@ class TransactionModel{
 			$this->db->rollBack();
 			return array("error" => "1", "message" => $e->getMessage());
 		}
+	}
+	
+	public function setTransactionStatus($params){
 	}
 }
 ?>

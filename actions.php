@@ -1,10 +1,16 @@
 <?php
 include 'db/DBHelper.php';
-include 'models/CustomerModel.php';
-include 'models/UserModel.php';
-include 'models/WoodModel.php';
-include 'models/TransactionModel.php';
 include 'models/UOMModel.php';
+include 'actions/woodActions.php';
+include 'actions/customerActions.php';
+include 'actions/userActions.php';
+include 'actions/transactionActions.php';
+
+function authenticate($user_key){
+		$usermodel = new UserModel();
+		return $usermodel -> authenticate($user_key);
+	}
+	
 class Actions {
 	public function authenticate($user_key){
 		$usermodel = new UserModel();

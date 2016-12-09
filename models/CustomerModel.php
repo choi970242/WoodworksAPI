@@ -109,5 +109,34 @@ class CustomerModel{
 			return array("error" => "1", "message" => $e->getMessage());
 		}
 	}
+	
+	public function addSpecialPrice($params){
+		$stmt = $this->db -> prepare("INSERT INTO CUSTOMER_SPECIAL_PRICES (CUSTOMER_ID, WOOD_ID, WOOD_PRICE) VALUES (?,?,?);");
+		try{
+			$this->db->beginTransaction();
+			$specialprices = $params -> customer_specialprices;
+			if(is_array($specialprices)){
+				foreach($specialprices as $specialprice){
+					$stmt -> bindParam(1,$params->customer_id);
+					$stmt -> bindParam(2,$specialprice-> wood_id);
+					$stmt -> bindParam(3,$specialprice->wood_price);
+					$stmt -> execute();
+				}
+			}
+			else{
+				$stmt -> bindParam(1,$params->customer_id);
+				$stmt -> bindParam(2,$specialprices->wood_id);
+				$stmt -> bindParam(3,$specialprices->wood_price);
+				$stmt -> execute();
+			}
+			$this->db->commit();
+			$result = array("error" => null, "message" => "Prices added successfully!");
+			return $result;
+		}
+		catch(Exception $e){
+			$this->db->rollBack();
+			return array("error" => "1", "message" => $e->getMessage());
+		}
+	}
 }
 ?>

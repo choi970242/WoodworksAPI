@@ -7,7 +7,7 @@ class WoodModel{
 		$helper = new DBHelper();
 		$this-> db = $helper -> getInstance();
 	}
-	public function getWoods($params){
+	public function getRules($params){
 		if(empty($params)){
 			$sqlstmt = "SELECT * FROM WOOD;";
 			$stmt = $this->db -> prepare($sqlstmt);
