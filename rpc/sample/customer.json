@@ -1,0 +1,10 @@
+{
+	"method" : "addCustomer"
+	,"param" :
+	{
+	"company_name" : "MyWoodWorks"
+	,"company_address" : "Dyan sa tabi2"
+	,"contact_person" : "Aldrich Choi"
+	,"contact_number" : "09228812593"
+	}
+}
